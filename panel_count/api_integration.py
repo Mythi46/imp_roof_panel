@@ -341,8 +341,13 @@ def process_multiple_roof_masks(roof_masks_b64, gsd, offset_m, panel_spacing_m, 
 
             # 個別の屋根を処理
             try:
-                roof_result = calculate_panel_layout_fast(
-                    roof_mask, gsd, offset_m, panel_spacing_m, panel_options
+                # Use single-roof calculation helper for consistency
+                roof_result = calculate_single_roof(
+                    roof_mask=roof_mask,
+                    gsd=gsd,
+                    panel_options=panel_options,
+                    offset_m=offset_m,
+                    panel_spacing_m=panel_spacing_m,
                 )
 
                 # 結果を追加

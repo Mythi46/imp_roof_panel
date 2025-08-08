@@ -86,7 +86,7 @@ WeightsUnpickler error: Unsupported global: GLOBAL torch.nn.modules.container.Se
   ```python
   # Primary: Add safe globals / 主要：安全グローバル変数を追加
   torch.serialization.add_safe_globals([Sequential, Conv2d, ...])
-  
+
   # Fallback: Temporarily disable weights_only / フォールバック：一時的にweights_onlyを無効化
   if "weights_only" in str(e):
       torch.load = lambda *args, **kwargs: original_load(*args, **{**kwargs, 'weights_only': False})
@@ -133,6 +133,32 @@ TypeError: visualize_panels_on_mask() missing 2 required positional arguments: '
 - Moved route decorator to correct function / ルートデコレータを正しい関数に移動
 - Fixed function signature and routing / 関数シグネチャとルーティングを修正
 - Verified API endpoints work correctly / APIエンドポイントが正しく動作することを確認
+
+### 8. Batch Processing Function Misuse / バッチ処理での関数誤用
+
+**Error Message / エラーメッセージ:**
+```
+calculate_panel_layout_fast() takes 3 positional arguments but 5 were given
+```
+
+**Root Cause / 根本原因:**
+- Batch path mistakenly called low-level `calculate_panel_layout_fast(usable_mask, panel_w_px, panel_h_px)` with 5 high-level parameters (roof_mask, gsd, offset_m, panel_spacing_m, panel_options)
+
+**Solution / 解決策:**
+- Refactored batch path to reuse `calculate_single_roof(...)` for each mask
+- Kept per-roof visualization and summary aggregation consistent with single-roof path
+
+### 9. Roof Mask Decoding (RGBA Alpha) / 屋根マスク解釈（RGBAのアルファ）
+
+**Problem Description / 問題の説明:**
+- Segmentation output is an RGBA overlay (RGB keeps the original building, mask in alpha channel)
+- Grayscale decoding ignored alpha, causing panels to be placed over the entire building instead of the segmented roof
+
+**Solution / 解決策:**
+- Implemented `b64_to_binary_mask(...)`:
+  - If RGBA, use alpha channel as mask
+  - If RGB/Gray, convert to gray + Otsu threshold to 0/255
+- Applied to both single-roof and batch inputs so panels stay within the true roof region
 
 ## 🔧 Technical Implementation Highlights / 技術実装のハイライト
 
@@ -183,23 +209,27 @@ print(f"🏷️ Model task: {getattr(model, 'task', 'unknown')}")
 1. **Configuration Issues / 設定問題**: 2 (Docker config, environment variables / Docker設定、環境変数)
 2. **PyTorch Compatibility / PyTorch互換性**: 3 (method missing, parameter error, security feature / メソッド不存在、パラメータエラー、セキュリティ機能)
 3. **Model Loading Issues / モデル読み込み問題**: 1 (version compatibility / バージョン互換性)
-4. **Functional Logic Issues / 機能ロジック問題**: 1 (mock mode / モックモード)
+4. **Functional Logic Issues / 機能ロジック問題**: 2 (mock mode, batch function misuse / モックモード、バッチ関数の誤用)
 5. **API Routing Issues / APIルーティング問題**: 1 (Flask decorator placement / Flaskデコレータ配置)
+6. **Data Handling Issues / データ処理問題**: 1 (RGBA alpha mask decoding / RGBAアルファマスクの解釈)
 
 ### Files Modified / 修正されたファイル
 - `compose.yml` - Added environment variable configuration / 環境変数設定を追加
 - `.env` - Created new environment variable file / 新しい環境変数ファイルを作成
 - `roof/app/segmentation.py` - Multiple PyTorch compatibility fixes / 複数のPyTorch互換性修正
 - `roof/requirements.txt` - Updated dependency versions / 依存関係バージョンを更新
+- `panel_count/api_integration.py` - Fixed routing, batch processing, and RGBA mask decoding / ルーティング、バッチ処理、RGBAマスク解釈を修正
 
 ### Debugging Rounds / デバッグラウンド
-Total of **6 rounds** of problem diagnosis and resolution / 合計**6ラウンド**の問題診断と解決:
+Total of **8 rounds** of problem diagnosis and resolution / 合計**8ラウンド**の問題診断と解決:
 1. Initial problem analysis (mock mode) / 初期問題分析（モックモード）
 2. PyTorch 2.0.1 compatibility / PyTorch 2.0.1互換性
 3. Safe globals fix / 安全グローバル変数修正
 4. PyTorch 2.6+ security features / PyTorch 2.6+セキュリティ機能
 5. YOLO model loading debugging / YOLOモデル読み込みデバッグ
 6. Panel Count API routing fix / Panel Count APIルーティング修正
+7. Batch path refactor to reuse single-roof logic / バッチ経路を単体処理ロジックへリファクタ
+8. RGBA mask decoding and normalization / RGBAマスク解釈と正規化
 
 ## 🎯 Lessons Learned / 学んだ教訓
 
@@ -254,6 +284,6 @@ Total of **6 rounds** of problem diagnosis and resolution / 合計**6ラウン�
 - Separate PR recommended for comprehensive solution / 包括的な解決策には別のPRを推奨
 
 ---
-*Bug Fix Rounds: 6 | Files Involved: 5 | Problems Resolved: 8*
-*バグ修正ラウンド：6 | 関連ファイル：5 | 解決された問題：8*
-*Last Updated / 最終更新: 2025-01-08*
+*Bug Fix Rounds: 8 | Files Involved: 6 | Problems Resolved: 10*
+*バグ修正ラウンド：8 | 関連ファイル：6 | 解決された問題：10*
+*Last Updated / 最終更新: 2025-08-08*
