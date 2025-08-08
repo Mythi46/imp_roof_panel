@@ -13,8 +13,8 @@ RUN apt-get update \
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-#モデル保存
-COPY best_v2.pt ./roof/best_v2.pt
+# モデルはコンテナ外からマウントし、環境変数 ROOF_MODEL_PATH で指定する方針
+# COPY は行いません（本番環境での明示的なモデル管理を徹底）
 
 # アプリケーションコードをコピー
 COPY app/ ./app 

@@ -101,3 +101,6 @@ POST /segment_masks
     - 将宿主机权重挂载到 /models/roof_best.pt
   - 你可以通过环境变量 ROOF_MODEL_HOST_PATH 指定宿主机权重文件绝对路径。
 
+- 注意：preroof 的模型完全替代旧模型。生产环境必须通过 ROOF_MODEL_PATH 指定权重；不再使用仓库内的旧 best_v2.pt。
+
+

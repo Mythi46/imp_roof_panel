@@ -21,23 +21,20 @@ from pathlib import Path
 current_dir = Path(__file__).parent.parent  # /app/roof
 repo_root = current_dir.parent             # プロジェクトルート
 
-# 優先順位: 環境変数 > preroof 強化版 > 既存の best_v2.pt > Docker パス
+# 優先順位: 環境変数 > preroof 強化版（開発時のみ）
 env_model_path = os.getenv("ROOF_MODEL_PATH")
 if env_model_path:
     model_path = Path(env_model_path)
 else:
+    # 開発作業時の便宜上、preroof の学習成果を自動検出（本番では必ず ROOF_MODEL_PATH を指定）
     preroof_candidate = repo_root / "preroof/runs/segment/continue_training_optimized/weights/best.pt"
     if preroof_candidate.exists():
         model_path = preroof_candidate
     else:
-        model_path = current_dir / "best_v2.pt"
-
-if not model_path.exists():
-    # Docker環境での代替パス
-    docker_candidate = Path("/app/roof/best_v2.pt")
-    model_path = docker_candidate
-    if not model_path.exists():
-        raise FileNotFoundError(f"Model file not found. Checked: env={env_model_path}, preroof={preroof_candidate if 'preroof_candidate' in locals() else 'N/A'}, default={current_dir / 'best_v2.pt'}, docker={docker_candidate}")
+        raise FileNotFoundError(
+            "No model path provided. Set ROOF_MODEL_PATH to a valid model file. "
+            "For development you can place preroof weights under preroof/runs/.../best.pt."
+        )
 
 # PyTorch version compatibility fix
 import torch
@@ -76,8 +73,8 @@ if hasattr(torch.serialization, 'add_safe_globals'):
         # If modules can't be imported, skip safe globals
         pass
 
-# 开发环境使用模拟模型
-USE_MOCK_MODEL = os.getenv('USE_MOCK_MODEL', 'true').lower() == 'true'
+# 默认禁用模拟模型，除非显式开启
+USE_MOCK_MODEL = os.getenv('USE_MOCK_MODEL', 'false').lower() == 'true'
 
 if USE_MOCK_MODEL:
     print("⚠️  Using mock model for development")
@@ -112,7 +109,6 @@ else:
         else:
             print(f"💥 Model file incompatible, falling back to mock mode")
             print(f"🔄 Setting USE_MOCK_MODEL=True due to model compatibility issue")
-            global USE_MOCK_MODEL
             USE_MOCK_MODEL = True
             model = None
 
