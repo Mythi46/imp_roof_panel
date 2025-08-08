@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 """
-Simple end-to-end demo:
+Simple end-to-end demo (configurable):
 - Read an image
 - Call roof API /segment_masks
 - Send masks to panel API /calculate_panels
 - Save results under ./demo_results
+
+Usage:
+  python scripts/e2e_demo.py <image_path> [--roof-url URL] [--panel-url URL] \
+      [--gsd 0.05] [--offset 0.3] [--panel-name Standard_B] \
+      [--panel-len 1.65] [--panel-wid 1.0]
 """
 
 import os
@@ -12,11 +17,8 @@ import sys
 import json
 import base64
 import requests
+import argparse
 from pathlib import Path
-
-ROOF_URL = os.environ.get("ROOF_API_URL", "http://localhost:8000")
-PANEL_URL = os.environ.get("PANEL_API_URL", "http://localhost:8001")
-
 
 def b64_to_file(data_url: str, out_path: Path):
     b64 = data_url.split(",")[-1]
@@ -24,11 +26,18 @@ def b64_to_file(data_url: str, out_path: Path):
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python scripts/e2e_demo.py <image_path>")
-        sys.exit(1)
+    p = argparse.ArgumentParser()
+    p.add_argument('image_path')
+    p.add_argument('--roof-url', default=os.environ.get('ROOF_API_URL', 'http://localhost:8000'))
+    p.add_argument('--panel-url', default=os.environ.get('PANEL_API_URL', 'http://localhost:8001'))
+    p.add_argument('--gsd', type=float, default=float(os.environ.get('GSD', 0.05)))
+    p.add_argument('--offset', type=float, default=float(os.environ.get('OFFSET_M', 0.3)))
+    p.add_argument('--panel-name', default='Standard_B')
+    p.add_argument('--panel-len', type=float, default=1.65)
+    p.add_argument('--panel-wid', type=float, default=1.0)
+    args = p.parse_args()
 
-    img_path = Path(sys.argv[1])
+    img_path = Path(args.image_path)
     if not img_path.exists():
         print(f"Image not found: {img_path}")
         sys.exit(1)
@@ -40,11 +49,12 @@ def main():
     print("[1/3] Calling roof /segment_masks ...")
     with img_path.open("rb") as f:
         files = {"image": (img_path.name, f, "image/jpeg")}
-        r = requests.post(f"{ROOF_URL}/segment_masks", files=files, timeout=120)
+        r = requests.post(f"{args.roof_url}/segment_masks", files=files, timeout=180)
     r.raise_for_status()
     seg = r.json()
     masks = seg.get("masks", [])
-    print(f"  -> got {len(masks)} mask(s)")
+    centers = seg.get("centers", [])
+    print(f"  -> got {len(masks)} mask(s), {len(centers)} center(s)")
 
     # save first mask for inspection
     if masks:
@@ -54,11 +64,11 @@ def main():
     print("[2/3] Calling panel /calculate_panels ...")
     payload = {
         "roof_masks": masks,
-        "gsd": float(os.environ.get("GSD", 0.05)),
-        "offset_m": float(os.environ.get("OFFSET_M", 0.3)),
-        "panel_options": {"Standard_B": [1.65, 1.0]}
+        "gsd": args.gsd,
+        "offset_m": args.offset,
+        "panel_options": {args.panel_name: [args.panel_len, args.panel_wid]},
     }
-    r2 = requests.post(f"{PANEL_URL}/calculate_panels", json=payload, timeout=240)
+    r2 = requests.post(f"{args.panel_url}/calculate_panels", json=payload, timeout=300)
     r2.raise_for_status()
     result = r2.json()
 
