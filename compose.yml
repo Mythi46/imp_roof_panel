@@ -53,6 +53,16 @@ services:
     ports:
       - "8000:8000"
 
+
+  # Healthcheck container for roof (optional, curl-based)
+  roof-health:
+    image: curlimages/curl:8.8.0
+    depends_on:
+      - roof
+    command: ["sh", "-c", "curl -sf http://roof:8000/docs >/dev/null && echo healthy || (echo unhealthy && exit 1)"]
+    networks:
+      - iot_network
+
 networks:
   iot_network:
     external: true
