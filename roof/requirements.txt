@@ -7,7 +7,9 @@ uvicorn[standard]==0.24.0
 python-multipart==0.0.6
 
 # AI/ML
-ultralytics==8.0.200
+# Pin ultralytics to the version verified with preroof weights on your machine
+ultralytics==8.3.170
+# Keep torch/torchvision broad but compatible; adjust if future regressions
 torch>=2.0.1,<3.0.0
 torchvision>=0.15.2,<1.0.0
 
