@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏠 屋顶检测可视化结果展示</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .language-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .lang-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 5px 12px;
+            border-radius: 15px;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .lang-btn.active {
+            background: rgba(255,255,255,0.4);
+            font-weight: bold;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #4facfe;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .summary-section {
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .summary-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .gallery {
+            padding: 30px;
+        }
+        
+        .gallery h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 2em;
+        }
+        
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+        
+        .image-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .image-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .image-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .image-info {
+            padding: 20px;
+        }
+        
+        .image-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        .detection-count {
+            background: #4facfe;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        
+        .class-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .class-tag {
+            background: #e9ecef;
+            color: #495057;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+        
+        .class-tag.roof { background: #ff6b6b; color: white; }
+        .class-tag.farm { background: #4ecdc4; color: white; }
+        .class-tag.rice-fields { background: #45b7d1; color: white; }
+        .class-tag.baren-land { background: #96ceb4; color: white; }
+        
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .image-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .language-switcher {
+                position: static;
+                justify-content: center;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="language-switcher">
+                <a href="results_gallery.html" class="lang-btn active">中文</a>
+                <a href="results_gallery_en.html" class="lang-btn">English</a>
+                <a href="results_gallery_ja.html" class="lang-btn">日本語</a>
+            </div>
+            <h1>🏠 屋顶检测可视化结果展示</h1>
+            <p>基于YOLOv8l-seg的高性能屋顶检测系统 - 90.77% mAP@0.5</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">20</div>
+                <div class="stat-label">测试图片</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">186</div>
+                <div class="stat-label">总检测数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">9.3</div>
+                <div class="stat-label">平均每图</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">90.77%</div>
+                <div class="stat-label">模型精度</div>
+            </div>
+        </div>
+        
+        <div class="summary-section">
+            <h2>📊 检测结果总览</h2>
+            <img src="detection_summary.png" alt="检测结果总览" class="summary-image">
+        </div>
+        
+        <div class="gallery">
+            <h2>🖼️ 检测结果画廊</h2>
+            <div class="image-grid">
+                
+                <div class="image-card">
+                    <img src="result_01_DJI_0201_JPG.rf.ffba625ebc2924631c808d8d25801bdf.png" alt="检测结果 1">
+                    <div class="image-info">
+                        <div class="image-title">图片 1: DJI_0201_JPG</div>
+                        <div class="detection-count">22 个目标</div>
+                        <div class="class-tags">
+                            <span class="class-tag rice-fields">rice-fields</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="result_02_Farm-24_7_jpg.rf.cb6ad3a6ef11c55fa8a033f1d7fccb36.png" alt="检测结果 2">
+                    <div class="image-info">
+                        <div class="image-title">图片 2: Farm-24_7_jpg</div>
+                        <div class="detection-count">5 个目标</div>
+                        <div class="class-tags">
+                            <span class="class-tag farm">farm</span>
+                            <span class="class-tag rice-fields">rice-fields</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="result_03_DJI_0623_JPG.rf.d68eafd7c93a33c499084f0678cd6055.png" alt="检测结果 3">
+                    <div class="image-info">
+                        <div class="image-title">图片 3: DJI_0623_JPG</div>
+                        <div class="detection-count">2 个目标</div>
+                        <div class="class-tags">
+                            <span class="class-tag rice-fields">rice-fields</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="result_04_DJI_0862_JPG.rf.2e9a212cfe5ab2ec9e64eee02c45571b.png" alt="检测结果 4">
+                    <div class="image-info">
+                        <div class="image-title">图片 4: DJI_0862_JPG</div>
+                        <div class="detection-count">11 个目标</div>
+                        <div class="class-tags">
+                            <span class="class-tag rice-fields">rice-fields</span>
+                            <span class="class-tag farm">farm</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="result_05_DJI_0754_JPG.rf.a9846ecf4d32273aef695c24198cf979.png" alt="检测结果 5">
+                    <div class="image-info">
+                        <div class="image-title">图片 5: DJI_0754_JPG</div>
+                        <div class="detection-count">5 个目标</div>
+                        <div class="class-tags">
+                            <span class="class-tag rice-fields">rice-fields</span>
+                            <span class="class-tag farm">farm</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="result_06_32_png.rf.433dd6f38f315b812c218aa5c2928079.png" alt="检测结果 6">
+                    <div class="image-info">
+                        <div class="image-title">图片 6: 32_png</div>
+                        <div class="detection-count">2 个目标</div>
+                        <div class="class-tags">
+                            <span class="class-tag roof">roof</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="result_07_DJI_0651_JPG.rf.ae75033fa7b661c770adb5c86c9b56f7.png" alt="检测结果 7">
+                    <div class="image-info">
+                        <div class="image-title">图片 7: DJI_0651_JPG</div>
+                        <div class="detection-count">3 个目标</div>
+                        <div class="class-tags">
+                            <span class="class-tag rice-fields">rice-fields</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="result_08_DJI_0775_JPG.rf.f256e538c134edecc5378568b66194c0.png" alt="检测结果 8">
+                    <div class="image-info">
+                        <div class="image-title">图片 8: DJI_0775_JPG</div>
+                        <div class="detection-count">6 个目标</div>
+                        <div class="class-tags">
+                            <span class="class-tag rice-fields">rice-fields</span>
+                            <span class="class-tag farm">farm</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="result_09_Farm-10_26_jpg.rf.e04f9013feedbc452c7ce4dbd7e7e237.png" alt="检测结果 9">
+                    <div class="image-info">
+                        <div class="image-title">图片 9: Farm-10_26_jpg</div>
+                        <div class="detection-count">15 个目标</div>
+                        <div class="class-tags">
+                            <span class="class-tag rice-fields">rice-fields</span>
+                            <span class="class-tag farm">farm</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="result_10_DJI_0848_JPG.rf.bd20c465c7118466f67281506a4750a9.png" alt="检测结果 10">
+                    <div class="image-info">
+                        <div class="image-title">图片 10: DJI_0848_JPG</div>
+                        <div class="detection-count">5 个目标</div>
+                        <div class="class-tags">
+                            <span class="class-tag rice-fields">rice-fields</span>
+                            <span class="class-tag farm">farm</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="result_11_39b97da9-27_png.rf.acebaee683ea5d2838e58910572177a6.png" alt="检测结果 11">
+                    <div class="image-info">
+                        <div class="image-title">图片 11: 39b97da9-27_png</div>
+                        <div class="detection-count">3 个目标</div>
+                        <div class="class-tags">
+                            <span class="class-tag roof">roof</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="result_12_DJI_0197_JPG.rf.df40943ff124d14694e82b79789232db.png" alt="检测结果 12">
+                    <div class="image-info">
+                        <div class="image-title">图片 12: DJI_0197_JPG</div>
+                        <div class="detection-count">17 个目标</div>
+                        <div class="class-tags">
+                            <span class="class-tag rice-fields">rice-fields</span>
+                            <span class="class-tag farm">farm</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="result_13_DJI_0183_JPG.rf.2e37109be04de2c447ab52f04c837235.png" alt="检测结果 13">
+                    <div class="image-info">
+                        <div class="image-title">图片 13: DJI_0183_JPG</div>
+                        <div class="detection-count">21 个目标</div>
+                        <div class="class-tags">
+                            <span class="class-tag rice-fields">rice-fields</span>
+                            <span class="class-tag farm">farm</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="result_14_DJI_0673_JPG.rf.537b2f43be4496acc5bcfa080332ca3b.png" alt="检测结果 14">
+                    <div class="image-info">
+                        <div class="image-title">图片 14: DJI_0673_JPG</div>
+                        <div class="detection-count">2 个目标</div>
+                        <div class="class-tags">
+                            <span class="class-tag rice-fields">rice-fields</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="result_15_Farm-7_24_jpg.rf.5d0adfac472a0c376502fb34b5bad0e6.png" alt="检测结果 15">
+                    <div class="image-info">
+                        <div class="image-title">图片 15: Farm-7_24_jpg</div>
+                        <div class="detection-count">15 个目标</div>
+                        <div class="class-tags">
+                            <span class="class-tag rice-fields">rice-fields</span>
+                            <span class="class-tag farm">farm</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="result_16_DJI_0632_JPG.rf.f317f863479b373990b4f35f4a018868.png" alt="检测结果 16">
+                    <div class="image-info">
+                        <div class="image-title">图片 16: DJI_0632_JPG</div>
+                        <div class="detection-count">3 个目标</div>
+                        <div class="class-tags">
+                            <span class="class-tag rice-fields">rice-fields</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="result_17_DJI_0811_JPG.rf.09fbda7245f928afd8f055f66898653d.png" alt="检测结果 17">
+                    <div class="image-info">
+                        <div class="image-title">图片 17: DJI_0811_JPG</div>
+                        <div class="detection-count">4 个目标</div>
+                        <div class="class-tags">
+                            <span class="class-tag rice-fields">rice-fields</span>
+                            <span class="class-tag farm">farm</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="result_18_Farm-6_59_jpg.rf.37798dff2a35b251724ea85f1bd622ab.png" alt="检测结果 18">
+                    <div class="image-info">
+                        <div class="image-title">图片 18: Farm-6_59_jpg</div>
+                        <div class="detection-count">6 个目标</div>
+                        <div class="class-tags">
+                            <span class="class-tag rice-fields">rice-fields</span>
+                            <span class="class-tag farm">farm</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="result_19_per-kedaimakanfaty_png_jpg.rf.200e9c87989dc403878fb2b79e05b8ff.png" alt="检测结果 19">
+                    <div class="image-info">
+                        <div class="image-title">图片 19: per-kedaimakanfaty_png_jpg</div>
+                        <div class="detection-count">20 个目标</div>
+                        <div class="class-tags">
+                            <span class="class-tag roof">roof</span>
+                            <span class="class-tag baren-land">Baren-Land</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-card">
+                    <img src="result_20_Farm-9_6_jpg.rf.4fcdf1074e863b8ff595c3e9eba19b75.png" alt="检测结果 20">
+                    <div class="image-info">
+                        <div class="image-title">图片 20: Farm-9_6_jpg</div>
+                        <div class="detection-count">19 个目标</div>
+                        <div class="class-tags">
+                            <span class="class-tag rice-fields">rice-fields</span>
+                            <span class="class-tag farm">farm</span>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🏠 屋顶检测系统 | 基于YOLOv8l-seg | 90.77% mAP@0.5 | 生成时间: 2025-01-28</p>
+            <p>📊 类别统计: rice-fields (101个) | farm (46个) | roof (25个) | Baren-Land (14个)</p>
+        </div>
+    </div>
+</body>
+</html>

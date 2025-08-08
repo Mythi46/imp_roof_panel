@@ -1,0 +1,23 @@
+{
+  "name": "Roof Detection Project",
+  "version": "1.0.0",
+  "description": "High-performance roof detection system using YOLOv8l-seg",
+  "performance": {
+    "mAP@0.5": "90.77%",
+    "mAP@0.5:0.95": "80.85%",
+    "improvement": "+42.7%"
+  },
+  "structure": {
+    "docs": "Documentation and reports",
+    "src": "Source code",
+    "scripts": "Utility scripts",
+    "data": "Dataset files",
+    "models": "Model files",
+    "outputs": "Training and evaluation outputs",
+    "configs": "Configuration files",
+    "notebooks": "Jupyter notebooks",
+    "archive": "Archived files"
+  },
+  "status": "Production Ready",
+  "last_updated": "2025-01-28"
+}

@@ -68,3 +68,19 @@ venv.bak/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# --- preroof integration: ignore heavy artifacts and weights ---
+preroof/.git/
+preroof/runs/
+preroof/outputs/
+preroof/visualization_results/
+preroof/visualization_results_50/
+preroof/data/
+preroof/notebooks/
+preroof/models/
+preroof/temp_files/
+preroof/archive/
+# Model weights (scoped): do not ignore tracked assets under predict/
+models/
+preroof/**/*.pt
+preroof/**/*.pth

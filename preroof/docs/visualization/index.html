@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏠 Roof Detection Visualization Results - Multi-Language</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 50px 30px;
+        }
+        
+        .header h1 {
+            margin: 0 0 20px 0;
+            font-size: 3em;
+            font-weight: 300;
+        }
+        
+        .header p {
+            margin: 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #4facfe;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .language-section {
+            padding: 50px 30px;
+        }
+        
+        .language-section h2 {
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 2em;
+        }
+        
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .language-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .language-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: #4facfe;
+        }
+        
+        .language-flag {
+            font-size: 4em;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .language-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .language-desc {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+        
+        .features {
+            background: #f8f9fa;
+            padding: 40px 30px;
+        }
+        
+        .features h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            text-align: left;
+        }
+        
+        .feature-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .feature-icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+        
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+        }
+        
+        .footer p {
+            margin: 5px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-row {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .language-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏠 Roof Detection Results</h1>
+            <p>Multi-Language Visualization Gallery</p>
+            <p>YOLOv8l-seg Based High-Performance System</p>
+        </div>
+        
+        <div class="stats-row">
+            <div class="stat">
+                <div class="stat-number">20</div>
+                <div class="stat-label">Test Images</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">186</div>
+                <div class="stat-label">Detections</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">90.77%</div>
+                <div class="stat-label">mAP@0.5</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Classes</div>
+            </div>
+        </div>
+        
+        <div class="language-section">
+            <h2>🌍 Choose Your Language</h2>
+            <p>Select your preferred language to view the detection results gallery</p>
+            
+            <div class="language-grid">
+                <a href="results_gallery.html" class="language-card">
+                    <span class="language-flag">🇨🇳</span>
+                    <div class="language-name">中文</div>
+                    <div class="language-desc">
+                        查看屋顶检测可视化结果<br>
+                        完整的中文界面和说明
+                    </div>
+                </a>
+                
+                <a href="results_gallery_en.html" class="language-card">
+                    <span class="language-flag">🇺🇸</span>
+                    <div class="language-name">English</div>
+                    <div class="language-desc">
+                        View roof detection visualization results<br>
+                        Complete English interface and descriptions
+                    </div>
+                </a>
+                
+                <a href="results_gallery_ja.html" class="language-card">
+                    <span class="language-flag">🇯🇵</span>
+                    <div class="language-name">日本語</div>
+                    <div class="language-desc">
+                        屋根検出の可視化結果を表示<br>
+                        完全な日本語インターフェースと説明
+                    </div>
+                </a>
+            </div>
+        </div>
+        
+        <div class="features">
+            <h3>🎯 Gallery Features</h3>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <span class="feature-icon">📊</span>
+                    <strong>Statistical Overview</strong><br>
+                    Comprehensive detection statistics and performance metrics
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🖼️</span>
+                    <strong>Visual Gallery</strong><br>
+                    20 test images with before/after comparison views
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🏷️</span>
+                    <strong>Class Analysis</strong><br>
+                    Detailed breakdown by object classes and confidence scores
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📱</span>
+                    <strong>Responsive Design</strong><br>
+                    Optimized for desktop, tablet, and mobile viewing
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>🏠 Roof Detection System</strong></p>
+            <p>Based on YOLOv8l-seg | 90.77% mAP@0.5 | Generated: 2025-01-28</p>
+            <p>📊 Class Distribution: rice-fields (101) | farm (46) | roof (25) | Baren-Land (14)</p>
+            <p>🎯 High Confidence Detections: 80.6% | Average per Image: 9.3 objects</p>
+        </div>
+    </div>
+</body>
+</html>

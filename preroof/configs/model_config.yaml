@@ -1,0 +1,148 @@
+# 模型配置
+model:
+  # 基础模型设置
+  name: "yolov8m-seg.pt"  # 中等大小的分割模型
+  task: "segment"
+  architecture: "yolov8"
+  
+  # 可选模型大小
+  alternatives:
+    small: "yolov8s-seg.pt"    # 更快，精度稍低
+    medium: "yolov8m-seg.pt"   # 平衡选择
+    large: "yolov8l-seg.pt"    # 更高精度，更慢
+    xlarge: "yolov8x-seg.pt"   # 最高精度，最慢
+
+# 🚀 训练配置 - 改进版本
+training:
+  # 基础训练参数
+  epochs: 50              # 增加训练轮数
+  batch_size: 16          # 减小batch size提高稳定性
+  img_size: 640           # 降低图像尺寸
+  device: "auto"          # auto, cpu, 0, 1, 2, 3...
+  workers: 8              # 数据加载线程数
+  
+  # 🔧 优化器设置
+  optimizer: "AdamW"      # SGD, Adam, AdamW
+  lr0: 0.0001            # 初始学习率 (降低)
+  lrf: 0.01              # 最终学习率因子
+  momentum: 0.937        # SGD动量
+  weight_decay: 0.0005   # 权重衰减
+  
+  # 🎯 损失函数权重 - 关键改进
+  loss_weights:
+    cls: 1.5             # 分类损失权重
+    box: 7.5             # 边界框损失权重
+    dfl: 1.5             # 分布焦点损失权重
+  
+  # 📊 数据增强 - 增强版本
+  augmentation:
+    mosaic: 0.8          # 增加mosaic增强
+    close_mosaic: 10     # mosaic关闭时机
+    mixup: 0.0           # MixUp增强
+    copy_paste: 0.0      # Copy-Paste增强
+    
+    # 几何变换
+    degrees: 15.0        # 旋转角度范围
+    translate: 0.1       # 平移范围
+    scale: 0.5           # 缩放范围
+    shear: 0.0           # 剪切变换
+    perspective: 0.0     # 透视变换
+    
+    # 翻转
+    flipud: 0.5          # 垂直翻转概率
+    fliplr: 0.5          # 水平翻转概率
+    
+    # 颜色增强
+    hsv_h: 0.015         # 色调变化
+    hsv_s: 0.7           # 饱和度变化
+    hsv_v: 0.4           # 亮度变化
+  
+  # 🛑 早停和保存
+  patience: 15           # 早停耐心值
+  save_period: 5         # 模型保存周期
+  save_best: true        # 保存最佳模型
+  save_last: true        # 保存最后模型
+  
+  # 验证设置
+  val_period: 1          # 验证周期
+  plots: true            # 生成训练图表
+  
+  # 高级设置
+  amp: true              # 自动混合精度
+  fraction: 1.0          # 使用数据集的比例
+  profile: false         # 性能分析
+  freeze: null           # 冻结层数
+  
+  # 多GPU训练
+  multi_scale: false     # 多尺度训练
+  overlap_mask: true     # 重叠掩码
+  mask_ratio: 4          # 掩码下采样比例
+
+# 🔍 预测配置 - 改进版本
+prediction:
+  # 🎯 阈值设置 - 关键改进
+  conf_threshold: 0.4    # 置信度阈值 (从0.2提高到0.4)
+  iou_threshold: 0.5     # IoU阈值 (新增)
+  
+  # 输出设置
+  save_results: true     # 保存预测结果
+  save_txt: true         # 保存文本标注
+  save_conf: true        # 保存置信度
+  save_crop: false       # 保存裁剪图像
+  
+  # 可视化设置
+  show_labels: true      # 显示标签
+  show_conf: true        # 显示置信度
+  line_width: 2          # 边框线宽
+  font_size: 12          # 字体大小
+  
+  # 高级设置
+  agnostic_nms: false    # 类别无关NMS
+  max_det: 1000          # 最大检测数量
+  retina_masks: false    # 高分辨率掩码
+  
+  # 批量预测
+  batch_size: 1          # 预测批次大小
+  stream: false          # 流式预测
+
+# 📊 评估配置
+evaluation:
+  # 评估指标
+  metrics:
+    - "mAP50"            # mAP@0.5
+    - "mAP50-95"         # mAP@0.5:0.95
+    - "precision"        # 精度
+    - "recall"           # 召回率
+    - "f1"               # F1分数
+  
+  # 评估设置
+  iou_thresholds: [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+  conf_threshold: 0.001  # 评估时的置信度阈值
+  max_det: 300          # 最大检测数量
+  
+  # 可视化
+  plots: true           # 生成评估图表
+  save_json: true       # 保存JSON结果
+  save_hybrid: false    # 保存混合标签
+
+# 🎯 性能目标
+targets:
+  # 整体性能目标
+  min_map50: 0.6        # 最低mAP50要求
+  target_map50: 0.7     # 目标mAP50
+  excellent_map50: 0.8  # 优秀mAP50
+  
+  # 类别平衡性
+  max_f1_std: 0.15      # F1标准差上限
+  min_class_f1: 0.5     # 单类别最低F1
+  
+  # 训练稳定性
+  max_loss_variance: 0.1  # 损失方差上限
+
+# 🔧 调试和日志
+debug:
+  verbose: true         # 详细输出
+  log_level: "INFO"     # 日志级别
+  save_logs: true       # 保存日志
+  tensorboard: false    # TensorBoard可视化
+  wandb: false          # Weights & Biases集成

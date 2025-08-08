@@ -1,0 +1,84 @@
+{
+  "organization_time": "2025-07-29T09:06:12.268555",
+  "summary": {
+    "total_files_moved": 12,
+    "scripts_moved": 8,
+    "json_files_moved": 3,
+    "misc_files_moved": 1
+  },
+  "moved_files": {
+    "scripts": [
+      {
+        "file": "check_model_status.py",
+        "category": "utilities",
+        "new_path": "scripts_archive\\utilities\\check_model_status.py"
+      },
+      {
+        "file": "organize_remaining_files.py",
+        "category": "utilities",
+        "new_path": "scripts_archive\\utilities\\organize_remaining_files.py"
+      },
+      {
+        "file": "remove_duplicates.py",
+        "category": "utilities",
+        "new_path": "scripts_archive\\utilities\\remove_duplicates.py"
+      },
+      {
+        "file": "fix_visualization_fonts.py",
+        "category": "visualization",
+        "new_path": "scripts_archive\\visualization\\fix_visualization_fonts.py"
+      },
+      {
+        "file": "generate_50_images_visualization.py",
+        "category": "visualization",
+        "new_path": "scripts_archive\\visualization\\generate_50_images_visualization.py"
+      },
+      {
+        "file": "generate_complete_html.py",
+        "category": "visualization",
+        "new_path": "scripts_archive\\visualization\\generate_complete_html.py"
+      },
+      {
+        "file": "generate_english_charts.py",
+        "category": "visualization",
+        "new_path": "scripts_archive\\visualization\\generate_english_charts.py"
+      },
+      {
+        "file": "generate_english_summary.py",
+        "category": "visualization",
+        "new_path": "scripts_archive\\visualization\\generate_english_summary.py"
+      }
+    ],
+    "json_files": [
+      {
+        "file": "duplicate_removal_summary.json",
+        "new_path": "project_status\\duplicate_removal_summary.json"
+      },
+      {
+        "file": "project_status_report.json",
+        "new_path": "project_status\\project_status_report.json"
+      },
+      {
+        "file": "root_cleanup_summary.json",
+        "new_path": "project_status\\root_cleanup_summary.json"
+      }
+    ],
+    "misc_files": [
+      {
+        "file": "font_test_result.png",
+        "new_path": "temp_files\\font_test_result.png"
+      }
+    ]
+  },
+  "new_structure": {
+    "scripts_archive/": "脚本归档目录",
+    "scripts_archive/utilities/": "工具脚本",
+    "scripts_archive/visualization/": "可视化脚本",
+    "scripts_archive/analysis/": "分析脚本",
+    "scripts_archive/setup/": "设置脚本",
+    "scripts_archive/experimental/": "实验脚本",
+    "scripts_archive/legacy/": "遗留脚本",
+    "project_status/": "项目状态文件",
+    "temp_files/": "临时文件"
+  }
+}

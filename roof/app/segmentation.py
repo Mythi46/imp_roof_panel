@@ -17,15 +17,27 @@ from app.util import make_full_mask_png
 import os
 from pathlib import Path
 
-# 開発環境とDocker環境の両方に対応
-current_dir = Path(__file__).parent.parent
-model_path = current_dir / "best_v2.pt"
+# 開発環境とDocker環境の両方に対応 + preroof 強化版の自動検出
+current_dir = Path(__file__).parent.parent  # /app/roof
+repo_root = current_dir.parent             # プロジェクトルート
+
+# 優先順位: 環境変数 > preroof 強化版 > 既存の best_v2.pt > Docker パス
+env_model_path = os.getenv("ROOF_MODEL_PATH")
+if env_model_path:
+    model_path = Path(env_model_path)
+else:
+    preroof_candidate = repo_root / "preroof/runs/segment/continue_training_optimized/weights/best.pt"
+    if preroof_candidate.exists():
+        model_path = preroof_candidate
+    else:
+        model_path = current_dir / "best_v2.pt"
 
 if not model_path.exists():
     # Docker環境での代替パス
-    model_path = Path("/app/roof/best_v2.pt")
+    docker_candidate = Path("/app/roof/best_v2.pt")
+    model_path = docker_candidate
     if not model_path.exists():
-        raise FileNotFoundError(f"Model file not found at {model_path}")
+        raise FileNotFoundError(f"Model file not found. Checked: env={env_model_path}, preroof={preroof_candidate if 'preroof_candidate' in locals() else 'N/A'}, default={current_dir / 'best_v2.pt'}, docker={docker_candidate}")
 
 # PyTorch version compatibility fix
 import torch

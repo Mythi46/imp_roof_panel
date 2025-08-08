@@ -1,0 +1,111 @@
+# 数据集配置
+dataset:
+  name: "satellite-segmentation"
+  description: "卫星图像分割检测数据集 - 屋顶、农田、稻田、裸地"
+  version: "v1.0"
+  
+  # 类别定义
+  classes:
+    - "Baren-Land"    # 裸地
+    - "farm"          # 农田  
+    - "rice-fields"   # 稻田
+    - "roof"          # 屋顶
+  
+  num_classes: 4
+  
+  # 🔧 类别权重 - 解决数据不平衡的关键设置
+  class_weights: [1.4, 1.2, 1.3, 0.6]  # 对应上述类别顺序
+  
+  # 数据分布信息
+  distribution:
+    total_images: 2656
+    train_ratio: 0.7
+    val_ratio: 0.2
+    test_ratio: 0.1
+    
+    # 原始类别分布（调整前）
+    original_counts:
+      roof: 12858
+      farm: 6896
+      rice-fields: 5547
+      Baren-Land: 4588
+    
+    # 调整后分布
+    balanced_counts:
+      roof: 7986
+      farm: 6896
+      rice-fields: 5547
+      Baren-Land: 4588
+
+# 数据路径配置
+paths:
+  # 本地数据路径
+  root: "data"
+  raw: "data/raw"
+  processed: "data/processed"
+  external: "data/external"
+  
+  # 训练数据路径
+  train_images: "data/processed/train/images"
+  train_labels: "data/processed/train/labels"
+  
+  val_images: "data/processed/val/images"
+  val_labels: "data/processed/val/labels"
+  
+  test_images: "data/processed/test/images"
+  test_labels: "data/processed/test/labels"
+
+# Roboflow数据集配置
+roboflow:
+  api_key: "EkXslogyvSMHiOP3MK94"  # 同事提供的更新API密钥
+  workspace: "a-imc4u"
+  project: "new-2-6zp4h"
+  version: 1
+  format: "yolov8"
+  
+  # 数据集来源
+  sources:
+    - name: "satellite-building-segmentation"
+      url: "https://universe.roboflow.com/test-dsrcs/satellite-building-segmentation-xysut-gmrr5"
+      description: "建筑物/屋顶分割数据"
+    
+    - name: "rice-fields-segmentation"
+      url: "https://universe.roboflow.com/pens-hkypv/rice-fields-segmentation"
+      description: "稻田分割数据"
+    
+    - name: "farmland-instance-segmentation"
+      url: "https://universe.roboflow.com/jeet-dfono/farmland-instance-segmentation"
+      description: "农田和裸地分割数据"
+
+# 数据预处理配置
+preprocessing:
+  # 图像预处理
+  auto_orient: true
+  resize:
+    method: "stretch"  # stretch, letterbox, crop
+    target_size: [640, 640]
+  
+  # 数据增强
+  augmentation:
+    horizontal_flip: 0.5
+    vertical_flip: 0.5
+    rotation_range: [-15, 15]  # 度数
+    brightness: 0.1
+    contrast: 0.1
+    saturation: 0.1
+    hue: 0.05
+
+# 数据验证
+validation:
+  check_images: true
+  check_labels: true
+  min_image_size: [100, 100]
+  max_image_size: [4000, 4000]
+  allowed_formats: [".jpg", ".jpeg", ".png", ".bmp"]
+  
+# 数据统计
+statistics:
+  calculate_mean_std: true
+  generate_distribution_plots: true
+  save_sample_images: true
+  sample_count: 20
