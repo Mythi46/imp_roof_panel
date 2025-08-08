@@ -1,0 +1,72 @@
+name: Roof API E2E (Real Weights)
+
+on:
+  workflow_dispatch:
+    inputs:
+      gdrive_url:
+        description: 'Google Drive folder URL or file URL for weights (.pt)'
+        required: false
+        default: 'https://drive.google.com/drive/folders/1PAZhk_L8AdMqOqG7NZRgWWbLNJ-wgrzd?usp=drive_link'
+
+jobs:
+  e2e-real:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      DEFAULT_GDRIVE_URL: 'https://drive.google.com/drive/folders/1PAZhk_L8AdMqOqG7NZRgWWbLNJ-wgrzd?usp=drive_link'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install deps (roof + gdown)
+        working-directory: roof
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install gdown==5.2.0
+
+      - name: Download weights from Google Drive
+        working-directory: roof
+        env:
+          INPUT_URL: ${{ github.event.inputs.gdrive_url }}
+        run: |
+          set -euo pipefail
+          URL="${INPUT_URL:-$DEFAULT_GDRIVE_URL}"
+          echo "Using URL: $URL"
+          mkdir -p weights_dl
+          # gdown supports both file and folder URLs with --fuzzy
+          gdown --fuzzy "$URL" -O weights_dl --folder || gdown --fuzzy "$URL" -O weights_dl
+          echo "Downloaded files:"; ls -lR weights_dl || true
+          # pick a .pt file (prefer best.pt if exists)
+          MODEL_PATH=$( (ls -1 weights_dl/**/best.pt 2>/dev/null || true; ls -1 weights_dl/*.pt 2>/dev/null || true; find weights_dl -type f -name '*.pt' -print 2>/dev/null || true) | head -n1 )
+          if [ -z "$MODEL_PATH" ]; then echo "No .pt weights found"; exit 1; fi
+          echo "Found model: $MODEL_PATH"
+          echo "ROOF_MODEL_PATH=$(pwd)/$MODEL_PATH" >> $GITHUB_ENV
+
+      - name: E2E call /segment_masks with real model
+        working-directory: .
+        env:
+          ROOF_MODEL_PATH: ${{ env.ROOF_MODEL_PATH }}
+        run: |
+          python - <<'PY'
+          import os, json
+          from fastapi.testclient import TestClient
+          from roof.app.main import app
+          # ensure model path is used
+          assert os.environ.get('ROOF_MODEL_PATH'), 'ROOF_MODEL_PATH not set'
+          client = TestClient(app)
+          with open('panel_count/sample_roof.png', 'rb') as f:
+              files={'image': ('sample_roof.png', f, 'image/png')}
+              r = client.post('/segment_masks', files=files)
+          print('status', r.status_code)
+          assert r.status_code == 200, r.text
+          data = r.json()
+          assert isinstance(data.get('masks'), list) and len(data['masks']) >= 1, 'no masks returned'
+          print('OK masks:', len(data['masks']))
+          PY
+
