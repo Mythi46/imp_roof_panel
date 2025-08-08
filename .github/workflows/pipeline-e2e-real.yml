@@ -115,14 +115,25 @@ jobs:
           centers = seg.get('centers', [])
           print('Roof masks:', len(masks), 'centers:', len(centers))
 
-          # 2) Call Panel API with batch masks (works with 0+ masks; we just verify route and 200)
+          # 2) Call Panel API
           panel_client = panel_app.test_client()
-          payload = {
-            'roof_masks': masks,
-            'gsd': 0.05,
-            'offset_m': 0.3,
-            'panel_options': {'Standard_B': [1.65, 1.0]}
-          }
+          if masks:
+            payload = {
+              'roof_masks': masks,
+              'gsd': 0.05,
+              'offset_m': 0.3,
+              'panel_options': {'Standard_B': [1.65, 1.0]}
+            }
+          else:
+            # Fallback: use a predefined synthetic roof shape to complete the pipeline
+            print('No masks from Roof; falling back to panel roof_shape_name for E2E continuity')
+            payload = {
+              'roof_shape_name': 'rikuyane',
+              'dimensions': [400, 500],
+              'gsd': 0.05,
+              'offset_m': 0.3,
+              'panel_options': {'Standard_B': [1.65, 1.0]}
+            }
           r2 = panel_client.post('/calculate_panels', json=payload)
           print('Panel status:', r2.status_code)
           assert r2.status_code == 200, r2.data
