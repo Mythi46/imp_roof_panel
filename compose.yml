@@ -1,0 +1,53 @@
+services:
+  classification:
+    build:
+      context: .
+      dockerfile: classification/Dockerfile
+    container_name: classification
+    environment:
+      DB_USER: root
+      DB_PASS: pass
+      DB_HOST: napi_db
+      DB_PORT: 3306
+      LOG_LEVEL: DEBUG
+    tty: true
+    stdin_open: true
+    networks:
+      - iot_network
+
+  predict:
+    build:
+      context: .
+      dockerfile: predict/Dockerfile
+    container_name: predict
+    environment:
+      DB_USER: root
+      DB_PASS: pass
+      DB_HOST: napi_db
+      DB_PORT: 3306
+      LOG_LEVEL: DEBUG
+      USE_FIXED_DATE: ${USE_FIXED_DATE} # .envより
+      WEATHER_SERVER_DOMAIN: ${WEATHER_SERVER_DOMAIN} #.envより
+      WEATHER_SERVER_KEY: ${WEATHER_SERVER_KEY} #.envより
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./predict/model:/gcs/model
+    networks:
+      - iot_network
+
+  roof:
+    build:
+      context: ./roof
+      dockerfile: Dockerfile
+    container_name: roof
+    environment:
+      - USE_MOCK_MODEL=${USE_MOCK_MODEL:-false}
+    networks:
+      - iot_network
+    ports:
+      - "8000:8000"
+
+networks:
+  iot_network:
+    external: true

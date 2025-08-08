@@ -1,0 +1,10 @@
+roof_type,panel_name,count_area,count_sim,orientation,roof_area,effective_area,gsd,offset,panel_spacing
+"sample/a Segment 1 center coordinates {'x' 220, 'y' 280}.png",Sharp_NQ-256AF,69,87,vertical,111.44250000000002,90.54000000000002,0.05,0.3,0.02
+"sample/a Segment 1 center coordinates {'x' 220, 'y' 280}.png",Standard_A,55,67,vertical,111.44250000000002,90.54000000000002,0.05,0.3,0.02
+"sample/a Segment 1 center coordinates {'x' 220, 'y' 280}.png",Standard_B,75,96,vertical,111.44250000000002,90.54000000000002,0.05,0.3,0.02
+"sample/a Segment 2 center coordinates {'x' 246, 'y' 315}.png",Sharp_NQ-256AF,62,350,horizontal,99.22250000000003,81.08500000000002,0.05,0.3,0.02
+"sample/a Segment 2 center coordinates {'x' 246, 'y' 315}.png",Standard_A,49,308,horizontal,99.22250000000003,81.08500000000002,0.05,0.3,0.02
+"sample/a Segment 2 center coordinates {'x' 246, 'y' 315}.png",Standard_B,67,384,horizontal,99.22250000000003,81.08500000000002,0.05,0.3,0.02
+"sample/b Segment 1 center coordinates {'x' 494, 'y' 464}.png",Sharp_NQ-256AF,55,89,horizontal,89.59000000000002,71.84250000000002,0.05,0.3,0.02
+"sample/b Segment 1 center coordinates {'x' 494, 'y' 464}.png",Standard_A,43,67,horizontal,89.59000000000002,71.84250000000002,0.05,0.3,0.02
+"sample/b Segment 1 center coordinates {'x' 494, 'y' 464}.png",Standard_B,59,103,horizontal,89.59000000000002,71.84250000000002,0.05,0.3,0.02

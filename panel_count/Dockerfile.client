@@ -1,0 +1,26 @@
+# 統合クライアント用Dockerfile
+FROM python:3.9-slim
+
+# 作業ディレクトリを設定
+WORKDIR /app
+
+# システムの依存関係をインストール
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Pythonの依存関係をインストール
+RUN pip install --no-cache-dir requests opencv-python-headless numpy
+
+# クライアントコードをコピー
+COPY roof_detection_client.py ./
+
+# 画像とresultsディレクトリを作成
+RUN mkdir -p /app/images /app/results
+
+# 環境変数のデフォルト値を設定
+ENV ROOF_API_URL=http://roof-detection:8000
+ENV PANEL_API_URL=http://solar-panel-calc:8001
+
+# デフォルトコマンド（インタラクティブモード）
+CMD ["python", "roof_detection_client.py"]

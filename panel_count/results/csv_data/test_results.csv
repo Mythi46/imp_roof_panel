@@ -1,0 +1,4 @@
+roof_type,panel_name,count_area,count_sim,orientation,roof_area,effective_area,gsd,offset,panel_spacing
+sample/a full.png,Sharp_NQ-256AF,38,10,horizontal,178.25750000000002,50.07250000000001,0.05,0.3,0.02
+sample/a full.png,Standard_A,30,8,horizontal,178.25750000000002,50.07250000000001,0.05,0.3,0.02
+sample/a full.png,Standard_B,41,11,vertical,178.25750000000002,50.07250000000001,0.05,0.3,0.02

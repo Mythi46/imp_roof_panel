@@ -1,0 +1,15 @@
+# Panel Count Service Dependencies
+# 太阳能板计算服务依赖
+
+# Core computation
+opencv-python-headless==4.8.1.78
+numpy==1.24.3
+scipy==1.11.1
+Pillow==10.0.0
+
+# Web framework
+flask==2.3.2
+requests==2.31.0
+
+# Optional: for enhanced functionality
+matplotlib==3.7.2

@@ -1,0 +1,28 @@
+roof_type,panel_name,count_area,count_sim,orientation,roof_area,effective_area,gsd,offset,panel_spacing
+"sample\a Segment 1 center coordinates {'x' 220, 'y' 280}.png",Sharp_NQ-256AF,69,52,horizontal,111.44250000000002,90.54000000000002,0.05,0.3,0.02
+"sample\a Segment 1 center coordinates {'x' 220, 'y' 280}.png",Standard_A,55,39,vertical,111.44250000000002,90.54000000000002,0.05,0.3,0.02
+"sample\a Segment 1 center coordinates {'x' 220, 'y' 280}.png",Standard_B,75,54,horizontal,111.44250000000002,90.54000000000002,0.05,0.3,0.02
+"sample\a Segment 2 center coordinates {'x' 246, 'y' 315}.png",Sharp_NQ-256AF,62,41,vertical,99.22250000000003,81.08500000000002,0.05,0.3,0.02
+"sample\a Segment 2 center coordinates {'x' 246, 'y' 315}.png",Standard_A,49,32,vertical,99.22250000000003,81.08500000000002,0.05,0.3,0.02
+"sample\a Segment 2 center coordinates {'x' 246, 'y' 315}.png",Standard_B,67,45,vertical,99.22250000000003,81.08500000000002,0.05,0.3,0.02
+"sample\a Segment 3 center coordinates {'x' 278, 'y' 292}.png",Sharp_NQ-256AF,43,26,vertical,72.29750000000001,56.25750000000001,0.05,0.3,0.02
+"sample\a Segment 3 center coordinates {'x' 278, 'y' 292}.png",Standard_A,34,21,vertical,72.29750000000001,56.25750000000001,0.05,0.3,0.02
+"sample\a Segment 3 center coordinates {'x' 278, 'y' 292}.png",Standard_B,46,29,vertical,72.29750000000001,56.25750000000001,0.05,0.3,0.02
+"sample\a Segment 4 center coordinates {'x' 253, 'y' 262}.png",Sharp_NQ-256AF,57,41,horizontal,94.34750000000003,75.43250000000002,0.05,0.3,0.02
+"sample\a Segment 4 center coordinates {'x' 253, 'y' 262}.png",Standard_A,46,31,vertical,94.34750000000003,75.43250000000002,0.05,0.3,0.02
+"sample\a Segment 4 center coordinates {'x' 253, 'y' 262}.png",Standard_B,62,43,vertical,94.34750000000003,75.43250000000002,0.05,0.3,0.02
+sample\a full.png,Sharp_NQ-256AF,38,7,vertical,178.25750000000002,50.07250000000001,0.05,0.3,0.02
+sample\a full.png,Standard_A,30,6,horizontal,178.25750000000002,50.07250000000001,0.05,0.3,0.02
+sample\a full.png,Standard_B,41,10,vertical,178.25750000000002,50.07250000000001,0.05,0.3,0.02
+"sample\b Segment 1 center coordinates {'x' 494, 'y' 464}.png",Sharp_NQ-256AF,55,36,vertical,89.59000000000002,71.84250000000002,0.05,0.3,0.02
+"sample\b Segment 1 center coordinates {'x' 494, 'y' 464}.png",Standard_A,43,28,horizontal,89.59000000000002,71.84250000000002,0.05,0.3,0.02
+"sample\b Segment 1 center coordinates {'x' 494, 'y' 464}.png",Standard_B,59,40,horizontal,89.59000000000002,71.84250000000002,0.05,0.3,0.02
+"sample\b Segment 2 center coordinates {'x' 481, 'y' 512}.png",Sharp_NQ-256AF,93,62,vertical,147.55750000000003,122.02000000000002,0.05,0.3,0.02
+"sample\b Segment 2 center coordinates {'x' 481, 'y' 512}.png",Standard_A,74,50,horizontal,147.55750000000003,122.02000000000002,0.05,0.3,0.02
+"sample\b Segment 2 center coordinates {'x' 481, 'y' 512}.png",Standard_B,101,72,horizontal,147.55750000000003,122.02000000000002,0.05,0.3,0.02
+"sample\b Segment 3 center coordinates {'x' 516, 'y' 507}.png",Sharp_NQ-256AF,93,66,horizontal,147.49500000000003,122.64250000000003,0.05,0.3,0.02
+"sample\b Segment 3 center coordinates {'x' 516, 'y' 507}.png",Standard_A,75,55,horizontal,147.49500000000003,122.64250000000003,0.05,0.3,0.02
+"sample\b Segment 3 center coordinates {'x' 516, 'y' 507}.png",Standard_B,102,73,horizontal,147.49500000000003,122.64250000000003,0.05,0.3,0.02
+sample\b full.png,Sharp_NQ-256AF,38,7,vertical,178.05250000000004,50.07250000000001,0.05,0.3,0.02
+sample\b full.png,Standard_A,30,6,horizontal,178.05250000000004,50.07250000000001,0.05,0.3,0.02
+sample\b full.png,Standard_B,41,10,vertical,178.05250000000004,50.07250000000001,0.05,0.3,0.02

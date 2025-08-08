@@ -1,0 +1,46 @@
+太阳能板计算结果文件统计
+============================
+
+生成时间: 2025-06-25
+项目: 太阳能板计算系统
+
+文件统计:
+---------
+
+CSV数据文件: 5个
+- all_samples_results.csv (主要结果文件)
+- sample_results.csv
+- segment_results.csv  
+- test_results.csv
+- result_summary.csv
+
+可视化图片: 23个
+- 几何形状屋顶: 8个
+- Sample真实图片: 15个
+
+报告文件: 3个
+- sample_analysis_report.md (主要分析报告)
+- report.md (技术报告)
+- report_ja_en.md (双语报告)
+
+日志文件: 1个
+- panel_calculator.log
+
+脚本文件: 1个
+- calculate_all_samples.py
+
+总计: 33个结果文件
+
+主要成果:
+---------
+✓ 成功分析了9张真实屋顶图片
+✓ 生成了完整的太阳能板布局方案
+✓ 提供了详细的数据分析报告
+✓ 创建了可视化布局图片
+
+建议查看顺序:
+-----------
+1. reports/sample_analysis_report.md - 了解分析结果
+2. csv_data/all_samples_results.csv - 查看详细数据
+3. visualizations/ - 查看布局图片
+4. logs/panel_calculator.log - 了解计算过程

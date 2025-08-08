@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # 屋根検出分割システム (対方のシステム)
+  roof-detection:
+    build:
+      context: ./roof_detect_segument/roof
+      dockerfile: Dockerfile
+    container_name: roof_detection_system
+    ports:
+      - "8000:8000"
+    networks:
+      - integration_network
+    environment:
+      - PYTHONPATH=/app
+    volumes:
+      - ./roof_detect_segument/roof/models:/app/models
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 太陽光パネル計算システム (我々のシステム)
+  solar-panel-calc:
+    build:
+      context: .
+      dockerfile: Dockerfile.panel
+    container_name: solar_panel_calculator
+    ports:
+      - "8001:8001"
+    networks:
+      - integration_network
+    environment:
+      - FLASK_RUN_PORT=8001
+      - PYTHONPATH=/app
+    depends_on:
+      - roof-detection
+    volumes:
+      - ./results:/app/results
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 統合クライアント (オプション)
+  integration-client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: integration_client
+    networks:
+      - integration_network
+    depends_on:
+      - roof-detection
+      - solar-panel-calc
+    volumes:
+      - ./test_images:/app/images
+      - ./results:/app/results
+    environment:
+      - ROOF_API_URL=http://roof-detection:8000
+      - PANEL_API_URL=http://solar-panel-calc:8001
+    profiles:
+      - client
+
+networks:
+  integration_network:
+    driver: bridge
+
+volumes:
+  results:
+    driver: local
