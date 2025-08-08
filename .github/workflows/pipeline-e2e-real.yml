@@ -71,11 +71,19 @@ jobs:
           ROOF_MODEL_PATH: ${{ env.ROOF_MODEL_PATH }}
         run: |
           python - <<'PY'
-          import os, json, base64
+          import os, json, base64, sys
           from pathlib import Path
+
+          # Ensure roof and panel_count directories are importable like local apps
+          sys.path.insert(0, str(Path('roof').resolve()))
+          sys.path.insert(0, str(Path('panel_count').resolve()))
+
           from fastapi.testclient import TestClient as FastClient
-          from roof.app.main import app as roof_app
-          from panel_count.api_integration import app as panel_app
+          # Import roof app as it expects to run with CWD=roof (so we added roof to sys.path)
+          from app.main import app as roof_app
+          # Import panel app as a top-level module (api_integration expects CWD=panel_count for absolute imports)
+          import api_integration as panel_api
+          panel_app = panel_api.app
 
           # Ensure real model will be used (CI is set by GitHub, but we set model path so segmentation won't mock)
           mp = os.environ.get('ROOF_MODEL_PATH')
