@@ -43,6 +43,11 @@ services:
     container_name: roof
     environment:
       - USE_MOCK_MODEL=${USE_MOCK_MODEL:-false}
+      # 可通过 ROOF_MODEL_PATH 指定生产权重路径（容器内路径）
+      - ROOF_MODEL_PATH=${ROOF_MODEL_PATH:-/models/roof_best.pt}
+    volumes:
+      # 将生产环境的权重文件挂载到容器内部固定路径
+      - ${ROOF_MODEL_HOST_PATH:-./roof/best_v2.pt}:/models/roof_best.pt:ro
     networks:
       - iot_network
     ports:
